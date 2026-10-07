@@ -112,6 +112,14 @@ You can add a preferred language or viewing-time budget. For another assistant, 
 
 The skill instructs the assistant to read every segment, verify supporting passages, attribute claims to speakers, and distinguish complete retrieved captions from complete audiovisual coverage. It cannot guarantee the accuracy of captions, visual interpretation, or an AI-generated summary.
 
+## Token usage before you send
+
+Each retrieved transcript shows an **estimated Codex input token count** beside the copy/download controls, with separate counts for the transcript (including metadata and timestamp formatting) and the setup prompt. Counting runs locally in a browser worker using `js-tiktoken` with the `o200k_base` reference encoding. It makes no AI-service request and uses the same complete text as copy and download, regardless of the search filter. Your selected model may tokenize it differently; this is not a bill, context-limit check, or prediction of total task usage.
+
+Caption extraction itself uses no AI tokens. Once you submit the handoff, Codex's existing context, skill instructions, reasoning, tool results, screenshots, and generated answer can add usage across multiple steps. Model and plan also matter; see [official Codex usage guidance](https://learn.chatgpt.com/docs/pricing). The app cannot infer your remaining allowance or turn this text estimate into a reliable price.
+
+For a lighter first pass, add **“Give me a caption-only brief; skip screenshots.”** This still reads all captions but skips visual inspection. Attaching the downloaded file instead of pasting includes the same text and does not reduce its token count. For a very long transcript, check the selected model's context limit before submitting it.
+
 ## Source format and architecture
 
 <details>

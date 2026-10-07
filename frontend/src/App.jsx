@@ -6,6 +6,7 @@ import SkeletonLoader from './components/SkeletonLoader';
 import EmptyState from './components/EmptyState';
 import ErrorToast from './components/ErrorToast';
 import Footer from './components/Footer';
+import CodexUsage from './components/CodexUsage';
 import { buildCodexHandoff, CODEX_PROMPT, downloadExport, formatTime, safeFilename } from './lib/transcript';
 
 const API_BASE_URL = import.meta.env.DEV ? (import.meta.env.VITE_API_URL || '') : '';
@@ -65,6 +66,7 @@ function CodexHandoff({ data, onError }) {
   return (
     <div className="codex-handoff" aria-label="Take the transcript to Codex">
       <div className="handoff-heading"><div><h4>Ready for Codex</h4><p>Full transcript, timestamps, and a ready-to-use prompt.</p></div><span className="file-type">.MD</span></div>
+      <CodexUsage data={data} />
       <div className="export-toolbar">
         <button className="button button-dark" onClick={download}><ArrowDownToLine size={16} />Download for Codex</button>
         <button className="button button-quiet" onClick={copyAll}>

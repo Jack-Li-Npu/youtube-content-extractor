@@ -20,6 +20,7 @@ Dependencies retain their own licenses. Exact installed versions and transitive 
 | Uvicorn | ASGI server | [encode/uvicorn](https://github.com/encode/uvicorn) |
 | React | Frontend components and state | [facebook/react](https://github.com/facebook/react) |
 | Vite | Frontend development and production build | [vitejs/vite](https://github.com/vitejs/vite) |
+| js-tiktoken | Local text token estimates using the o200k_base reference encoding; no model inference | [dqbd/tiktoken](https://github.com/dqbd/tiktoken) (MIT) |
 | Tailwind CSS | CSS tooling inherited from the frontend | [tailwindlabs/tailwindcss](https://github.com/tailwindlabs/tailwindcss) |
 | Lucide | Interface icons | [lucide-icons/lucide](https://github.com/lucide-icons/lucide) |
 | Geist / Geist Mono | Self-hosted typography | [vercel/geist-font](https://github.com/vercel/geist-font) |
@@ -27,6 +28,8 @@ Dependencies retain their own licenses. Exact installed versions and transitive 
 | uv | Isolated Python environment and locked installation | [astral-sh/uv](https://github.com/astral-sh/uv) |
 
 Font license copies are included at [Geist OFL](frontend/public/licenses/Geist-OFL.txt) and [Geist Mono OFL](frontend/public/licenses/Geist-Mono-OFL.txt).
+
+Token-estimation license copies are included at [js-tiktoken MIT](frontend/public/licenses/js-tiktoken-MIT.txt) and [base64-js MIT](frontend/public/licenses/base64-js-MIT.txt).
 
 ## Development guidance
 
