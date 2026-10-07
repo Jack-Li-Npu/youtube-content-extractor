@@ -38,7 +38,7 @@ test('Codex handoff keeps setup instructions outside the complete caption source
   assert.ok(sourceStart > 0, 'instructions precede the source document');
   const instructions = item.content.slice(0, sourceStart);
   assert.match(instructions, /\$skill-installer/);
-  assert.ok(instructions.includes('https://github.com/Jack-Li-Npu/efficient-content-extractor/tree/main/skills/video-brief'));
+  assert.ok(instructions.includes('https://github.com/Jack-Li-Npu/youtube-content-extractor/tree/main/skills/video-brief'));
   const blocks = readFences(item.content);
   assert.equal(JSON.parse(blocks[0].text).segment_count, modified.transcript_lines.length);
   assert.deepEqual(blocks.slice(1).map((block) => block.text), modified.transcript_lines.map((line) => line.text));

@@ -65,8 +65,8 @@ See the [Roadmap](ROADMAP.md) for scope, proposed interfaces, and contribution p
 The launcher is designed for macOS. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and Node.js 22.12+ with npm, then run:
 
 ```bash
-git clone https://github.com/Jack-Li-Npu/efficient-content-extractor.git
-cd efficient-content-extractor
+git clone https://github.com/Jack-Li-Npu/youtube-content-extractor.git
+cd youtube-content-extractor
 ./setup.sh
 ./start.command
 ```

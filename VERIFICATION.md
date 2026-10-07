@@ -11,11 +11,12 @@ Release preparation uses the documented `setup.sh` from an independent checkout,
 Copy and download now contain the same setup-aware prompt and complete transcript. The prompt requests installation only when `video-brief` is missing, then asks for illustrated takeaways and verified visual timestamps. The full prompt can be expanded on the page.
 
 - **7 frontend tests**, frontend lint, production build, and skill manifest validation passed.
+- A clean installation from `Jack-Li-Npu/youtube-content-extractor` into an isolated test directory matched the bundled skill and its UI metadata byte-for-byte.
 - Browser verification with synthetic API responses preserved all **1,104 segments** while search displayed one match; clipboard and downloaded Markdown matched byte-for-byte, including caption timings beyond one hour and instruction-like text inside source fences.
 - The download comparison utility confirmed the prompt and complete source content matched the extraction fixture.
 - Keyboard expansion of the prompt, the mobile layout at 390 pixels, and the download fallback after denied clipboard access passed; no browser JavaScript errors occurred.
 
-These checks verify the app's handoff, not installation or analysis in a new Codex account. Screenshot inspection still depends on the recipient's tools and source-video access. The prompt explicitly requests a caption-based brief and reported limitations when setup or visual inspection is unavailable.
+These checks verify the app's handoff and skill-package installation, not end-to-end analysis in a new Codex account. Screenshot inspection still depends on the recipient's tools and source-video access. The prompt explicitly requests a caption-based brief and reported limitations when setup or visual inspection is unavailable.
 
 ## Automated checks
 
