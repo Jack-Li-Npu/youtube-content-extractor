@@ -6,7 +6,7 @@ import SkeletonLoader from './components/SkeletonLoader';
 import EmptyState from './components/EmptyState';
 import ErrorToast from './components/ErrorToast';
 import Footer from './components/Footer';
-import { buildTranscriptExport, CODEX_PROMPT, downloadExport, formatTime, safeFilename } from './lib/transcript';
+import { buildCodexHandoff, CODEX_PROMPT, downloadExport, formatTime, safeFilename } from './lib/transcript';
 
 const API_BASE_URL = import.meta.env.DEV ? (import.meta.env.VITE_API_URL || '') : '';
 const EXAMPLE_URL = 'https://www.youtube.com/watch?v=Hrbq66XqtCo';
@@ -46,23 +46,25 @@ function CodexHandoff({ data, onError }) {
   const [copied, setCopied] = useState(false);
   async function copyAll() {
     try {
-      const item = buildTranscriptExport(data);
-      await navigator.clipboard.writeText(`${CODEX_PROMPT}\n\n${item.content}`);
+      const item = buildCodexHandoff(data);
+      await navigator.clipboard.writeText(item.content);
       setCopied(true);
+      onError('');
     } catch (failure) {
+      setCopied(false);
       onError(failure.name === 'NotAllowedError' ? 'Clipboard access failed. Download the transcript and attach it in Codex.' : failure.message);
     }
   }
   function download() {
     try {
-      downloadExport(buildTranscriptExport(data), safeFilename(data));
+      downloadExport(buildCodexHandoff(data), safeFilename(data));
     } catch (failure) {
       onError(failure.message);
     }
   }
   return (
     <div className="codex-handoff" aria-label="Take the transcript to Codex">
-      <div className="handoff-heading"><div><h4>Ready for Codex</h4><p>One complete file. Every timestamp included.</p></div><span className="file-type">.MD</span></div>
+      <div className="handoff-heading"><div><h4>Ready for Codex</h4><p>Full transcript, timestamps, and a ready-to-use prompt.</p></div><span className="file-type">.MD</span></div>
       <div className="export-toolbar">
         <button className="button button-dark" onClick={download}><ArrowDownToLine size={16} />Download for Codex</button>
         <button className="button button-quiet" onClick={copyAll}>
@@ -70,9 +72,12 @@ function CodexHandoff({ data, onError }) {
           {copied ? 'Transcript & prompt copied' : 'Copy for Codex'}
         </button>
       </div>
-      <p className="handoff-instruction">Attach the downloaded file in Codex and use this prompt, or paste everything with Copy for Codex.</p>
-      <p className="handoff-prompt">{CODEX_PROMPT}</p>
-      <p className="handoff-note">The video-brief skill guides the summary. Analysis happens in your Codex chat.</p>
+      <p className="handoff-instruction">Copy and paste into Codex, or attach the downloaded file and ask Codex to follow its opening instructions.</p>
+      <p className="handoff-note">The included prompt asks Codex to set up the video-brief skill if needed, then illustrate the takeaways with screenshots and precise video links.</p>
+      <details className="handoff-details">
+        <summary>View the included prompt</summary>
+        <p className="handoff-prompt">{CODEX_PROMPT}</p>
+      </details>
     </div>
   );
 }

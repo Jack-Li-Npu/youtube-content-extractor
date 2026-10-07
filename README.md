@@ -100,19 +100,17 @@ This setting covers backend YouTube requests. If npm or uv also needs a proxy, s
 
 ## Use the video-brief skill
 
-Copy `skills/video-brief/` into a personal Codex skills directory, such as `~/.agents/skills/video-brief/`. Install one copy only; an existing installation under `~/.codex/skills/video-brief/` can also be used. If it does not appear, restart Codex. See [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills).
+Click **Copy for Codex** and paste into your Codex chat. The copied text includes the complete transcript and a prompt that asks Codex to reuse `video-brief` if installed, or use `$skill-installer` to install it from this repository when missing. The prompt then asks Codex to read the installed instructions and continue with the transcript in the same chat. If installation is unavailable, it requests the same analysis workflow and an explicit limitation instead of assuming the skill exists.
 
-Attach the downloaded transcript and ask:
+**Download for Codex** includes the same prompt at the beginning of the `.transcript.md` file. Attach it and ask Codex to follow its opening instructions. You do not need to copy a separate setup prompt for each video. The web app itself does not install anything into Codex.
 
-```text
-Use $video-brief to read this entire transcript and give me a short overview,
-key points with clickable timestamps, and the sections most worth watching.
-Base the brief on the captions and flag uncertainty.
-```
+For manual installation, copy `skills/video-brief/` into `~/.agents/skills/video-brief/`. Keep only one installation; an existing copy under `~/.codex/skills/video-brief/` can also be used. Codex detects installed skills automatically; restart if it does not appear. See [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills).
 
-You can add a preferred language or viewing-time budget. Copy for Codex already includes the prompt and complete transcript, so you can paste directly instead of attaching a file. For another assistant, provide the skill's `SKILL.md` as workflow instructions alongside the source.
+The brief combines captions with screenshots when they refer to charts, diagrams, or demonstrations. Visual-dependent takeaways include readable visual details and a link to a verified clear view, with a separate narration link when useful. Screenshot inspection requires available browser/screenshot tools and access to the source video; a skill provides workflow instructions, not those tools. When visual inspection is unavailable, the prompt asks for a caption-based brief that identifies the unverified visuals.
 
-The skill instructs the assistant to read every segment, verify supporting passages, attribute claims to speakers, and distinguish complete retrieved captions from complete audiovisual coverage. It cannot guarantee the accuracy of captions or an AI-generated summary.
+You can add a preferred language or viewing-time budget. For another assistant, provide the skill's `SKILL.md` as workflow instructions alongside the source.
+
+The skill instructs the assistant to read every segment, verify supporting passages, attribute claims to speakers, and distinguish complete retrieved captions from complete audiovisual coverage. It cannot guarantee the accuracy of captions, visual interpretation, or an AI-generated summary.
 
 ## Source format and architecture
 

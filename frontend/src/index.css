@@ -135,7 +135,10 @@ input::placeholder { color: #737a69; }
 .file-type { font: 11px var(--mono); color: var(--accent); }
 .export-toolbar { display: flex; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 .handoff-instruction { color: var(--muted); font-size: 11px; line-height: 1.8; margin-top: 16px; max-width: 70ch; }
-.handoff-prompt { margin-top: 10px; padding: 12px 15px; border-left: 2px solid #ccd0bf; background: #f8f9f4; color: #4c5742; font-size: 12px; line-height: 1.8; user-select: all; }
+.handoff-details { margin-top: 12px; }
+.handoff-details summary { width: fit-content; color: var(--accent); font-size: 11px; cursor: pointer; }
+.handoff-details summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+.handoff-prompt { margin-top: 10px; padding: 12px 15px; border-left: 2px solid #ccd0bf; background: #f8f9f4; color: #4c5742; font-size: 12px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; user-select: all; }
 .handoff-note { font-size: 10px; line-height: 1.7; color: var(--muted); margin-top: 10px; }
 .timestamp-label { display: flex; gap: 6px; align-items: center; color: #6c775e; font-size: 11px; white-space: nowrap; }
 .reader-toolbar { display: flex; gap: 16px; align-items: center; padding: 14px 28px; border-top: 1px solid #eceee5; border-bottom: 1px solid #eceee5; background: #fcfdf9; }

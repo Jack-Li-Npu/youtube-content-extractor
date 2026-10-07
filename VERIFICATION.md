@@ -6,6 +6,17 @@ The release is a clean source snapshot of the local caption-only adaptation. The
 
 Release preparation uses the documented `setup.sh` from an independent checkout, with frozen uv dependencies and `npm ci`. Local checks use Python 3.13.9 and Node.js 25.3.0; GitHub Actions is configured for Python 3.13 and Node.js 22 on Ubuntu.
 
+## Codex handoff update — 2026-10-07
+
+Copy and download now contain the same setup-aware prompt and complete transcript. The prompt requests installation only when `video-brief` is missing, then asks for illustrated takeaways and verified visual timestamps. The full prompt can be expanded on the page.
+
+- **7 frontend tests**, frontend lint, production build, and skill manifest validation passed.
+- Browser verification with synthetic API responses preserved all **1,104 segments** while search displayed one match; clipboard and downloaded Markdown matched byte-for-byte, including caption timings beyond one hour and instruction-like text inside source fences.
+- The download comparison utility confirmed the prompt and complete source content matched the extraction fixture.
+- Keyboard expansion of the prompt, the mobile layout at 390 pixels, and the download fallback after denied clipboard access passed; no browser JavaScript errors occurred.
+
+These checks verify the app's handoff, not installation or analysis in a new Codex account. Screenshot inspection still depends on the recipient's tools and source-video access. The prompt explicitly requests a caption-based brief and reported limitations when setup or visual inspection is unavailable.
+
 ## Automated checks
 
 - **45 backend tests:** supported URLs, language/source selection, original-language preference, provider fallback, empty/failed results, accurate timing, local origin restrictions, and disabled media downloads.
