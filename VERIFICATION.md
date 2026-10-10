@@ -1,5 +1,13 @@
 # Verification
 
+## Chinese speech-caption correction — 2026-10-10
+
+The text-preservation check incorrectly inserted spaces between split caption chunks. This falsely rejected recognized text in languages such as Chinese that do not require spaces between words. The formatter now reconstructs the model's original boundary whitespace for validation, then trims individual displayed cues. It retains the text-preservation check and the original estimated timings.
+
+- **87 backend tests and five multilingual subcases** passed, along with Ruff. New cases cover Chinese, Japanese, Thai, mixed Chinese/English, and English sentence or pause splits, including JSON/SRT/Markdown exports. Non-Chinese cases are synthetic regression coverage, not live recognition accuracy tests.
+- Retried the already acquired public Douyin video `7694655284198772011` without another login or download. Offline recognition completed in approximately **65.5 seconds**, producing **605 Chinese segments** from **00:00:00.000 to 00:21:30.300**. All **5,666 non-whitespace recognized characters** were preserved, and the live API and complete Markdown handoff matched the normalized speech output. This checks formatting completeness, not recognition accuracy against the audio.
+- The browser displayed **Ready for Codex**, **605 segments**, and the copy/download controls. No server restart was needed because each speech retry launches a new worker from the updated source.
+
 ## Douyin release — 2026-10-10
 
 The 2.1 release adds a dedicated browser acquisition flow, manual verification when requested by Douyin, optional offline Apple Silicon speech recognition, resumable speech retries, and local timestamp playback. Detailed setup, a real result screenshot, data retention, and limitations are in [docs/DOUYIN.md](docs/DOUYIN.md).

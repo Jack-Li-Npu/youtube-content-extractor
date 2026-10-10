@@ -98,11 +98,13 @@ def normalize_segments(raw, *, offset, duration, language):
             if any(g[-1]["end"] <= g[0]["start"] for g in groups):
                 aligned = False
         candidates = (
-            [(g[0]["start"], g[-1]["end"], "".join(w["word"] for w in g).strip(), g) for g in groups]
+            [(g[0]["start"], g[-1]["end"], "".join(w["word"] for w in g), g) for g in groups]
             if aligned
             else [(start, end, text, words)]
         )
-        if normalize_space(" ".join(c[2] for c in candidates)) != normalize_space(text):
+        # Keep the model's boundary whitespace until after the preservation check.
+        # Inserting spaces between chunks falsely rejects Chinese, Japanese, etc.
+        if normalize_space("".join(c[2] for c in candidates)) != normalize_space(text):
             raise ExtractionError("text_invalid", "Caption formatting would lose recognized text.")
         for cue_start, cue_end, cue_text, cue_words in candidates:
             flags = []
@@ -119,7 +121,7 @@ def normalize_segments(raw, *, offset, duration, language):
             output.append(
                 {
                     "id": len(output) + 1,
-                    "text": cue_text,
+                    "text": cue_text.strip(),
                     "start": round(offset + max(0, cue_start), 3),
                     "end": round(offset + min(duration, cue_end), 3),
                     "duration": round(min(duration, cue_end) - max(0, cue_start), 3),

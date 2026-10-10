@@ -42,6 +42,38 @@ class CaptionRegressions(unittest.TestCase):
             normalize_segments([], offset=0, duration=10, language="en")
         self.assertEqual(error.exception.code, "no_speech")
 
+    def test_sentence_and_pause_splits_preserve_multilingual_text(self):
+        examples = [
+            ("zh", ["经济学该回头了。", "不要把人弄丢。"]),
+            ("ja", ["図を見てください。", "仕組みを説明します。"]),
+            ("th", ["ลองดูกราฟนี้", "แล้วดูผลลัพธ์"]),
+            ("zh", ["GDP增长放缓。", "AI investment is rising."]),
+            ("en", ["First sentence.", " Second sentence."]),
+        ]
+        for language, parts in examples:
+            with self.subTest(language=language, parts=parts):
+                raw = [{
+                    "start": 0.125,
+                    "end": 3.75,
+                    "text": "".join(parts),
+                    "words": [
+                        {"word": parts[0], "start": 0.125, "end": 1.25},
+                        {"word": parts[1], "start": 2.25, "end": 3.75},
+                    ],
+                }]
+                segments = normalize_segments(raw, offset=0, duration=4, language=language)
+                self.assertEqual([cue["text"] for cue in segments], [part.strip() for part in parts])
+                self.assertEqual([(cue["start"], cue["end"]) for cue in segments], [(0.125, 1.25), (2.25, 3.75)])
+                self.assertFalse(any("word_alignment_fallback" in cue["quality_flags"] for cue in segments))
+                with tempfile.TemporaryDirectory() as folder:
+                    prefix = Path(folder) / "captions"
+                    export({"metadata": {}, "segments": segments}, prefix)
+                    restored = json.loads(Path(str(prefix) + ".json").read_text())["segments"]
+                    self.assertEqual(restored, segments)
+                    for cue in segments:
+                        self.assertIn(cue["text"], Path(str(prefix) + ".srt").read_text())
+                        self.assertIn(cue["text"], Path(str(prefix) + ".md").read_text())
+
     def test_bad_timing_is_an_error(self):
         for start, end in ((1, 0.5), (float("nan"), 2), (0, 12)):
             with self.assertRaises(ExtractionError) as error:
