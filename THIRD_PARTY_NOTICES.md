@@ -26,6 +26,12 @@ Dependencies retain their own licenses. Exact installed versions and transitive 
 | Geist / Geist Mono | Self-hosted typography | [vercel/geist-font](https://github.com/vercel/geist-font) |
 | Fontsource | npm font packaging | [fontsource/fontsource](https://github.com/fontsource/fontsource) |
 | uv | Isolated Python environment and locked installation | [astral-sh/uv](https://github.com/astral-sh/uv) |
+| Playwright | Dedicated headed browser and normal Douyin playback response observation | [microsoft/playwright-python](https://github.com/microsoft/playwright-python) (Apache-2.0) |
+| MLX Whisper / MLX | Optional offline speech recognition on Apple Silicon; locked separately in `stt/uv.lock` | [ml-explore/mlx-examples/whisper](https://github.com/ml-explore/mlx-examples/tree/main/whisper), [ml-explore/mlx](https://github.com/ml-explore/mlx) (MIT) |
+| Whisper large-v3-turbo | Optional speech model, installed separately with pinned revision and checksums | [openai/whisper](https://github.com/openai/whisper), [MLX model conversion](https://huggingface.co/mlx-community/whisper-large-v3-turbo) (MIT) |
+| FFmpeg / FFprobe | Local audio decoding; installed separately | [FFmpeg](https://ffmpeg.org/legal.html) (license depends on the user's build) |
+
+The public [jiji262/douyin-downloader](https://github.com/jiji262/douyin-downloader) documentation informed the browser-acquisition approach. Its desktop browser bridge and Douzy code are not bundled, and Douzy is not a runtime dependency. The app's Douyin adapter is independently implemented.
 
 Font license copies are included at [Geist OFL](frontend/public/licenses/Geist-OFL.txt) and [Geist Mono OFL](frontend/public/licenses/Geist-Mono-OFL.txt).
 

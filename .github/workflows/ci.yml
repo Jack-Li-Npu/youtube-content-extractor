@@ -14,7 +14,8 @@ jobs:
           version: "0.9.24"
       - run: uv sync --project backend --frozen --python 3.13
       - run: backend/.venv/bin/python -m pytest -q
-      - run: backend/.venv/bin/ruff check backend/main.py backend/app/transcript_service.py backend/tests tests
+      - run: backend/.venv/bin/ruff check backend/main.py backend/app backend/workers backend/tests tests stt/download_model.py
+      - run: bash -n setup.sh setup-douyin.sh start.command
   frontend:
     runs-on: ubuntu-latest
     defaults:

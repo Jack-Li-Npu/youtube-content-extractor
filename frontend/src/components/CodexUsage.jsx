@@ -29,7 +29,7 @@ export default function CodexUsage({ data }) {
       <p className="usage-note">Screenshots, reasoning, tool results, and the AI reply add usage. Your model and existing chat also affect the total.</p>
       <details className="handoff-details usage-details">
         <summary>About token usage</summary>
-        <p>Tokens are units of text an AI reads and writes. This local estimate covers the complete copied or downloaded text; your selected model may count it differently. Caption extraction itself makes no AI requests.</p>
+        <p>Tokens are units of text an AI reads and writes. This local estimate covers the complete copied or downloaded text; your selected model may count it differently. Extraction makes no AI-service requests; optional Douyin speech recognition runs locally.</p>
         <p>For a lighter analysis, add “Give me a caption-only brief; skip screenshots.” Attaching the download instead of pasting includes the same text and does not reduce its token count.</p>
         <a href="https://learn.chatgpt.com/docs/pricing" target="_blank" rel="noopener noreferrer">Check Codex usage and plan guidance</a>
       </details>

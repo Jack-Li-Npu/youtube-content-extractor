@@ -25,3 +25,6 @@ verification/
 .DS_Store
 .idea/
 .vscode/
+stt/models/
+.runtime/
+browser-profile/

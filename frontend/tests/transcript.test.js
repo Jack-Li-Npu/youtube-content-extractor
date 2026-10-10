@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildCodexHandoff, buildTranscriptExport, preciseTime, safeFilename } from '../src/lib/transcript.js';
+import { buildCodexHandoff, buildTranscriptExport, preciseTime, safeFilename, timestampLink } from '../src/lib/transcript.js';
 
 const lines = [
   { start: 0, duration: 1.234, text: 'First <caption> & 世界' },
@@ -85,4 +85,33 @@ test('filenames cannot introduce paths or control characters', () => {
   const filename = safeFilename({ ...data, title: '../bad/name\u0000', language: 'en/..' });
   assert.ok(!filename.includes('/'));
   assert.ok(!filename.includes('\u0000'));
+});
+
+test('Douyin speech export preserves the complete source and labels estimated timing', () => {
+  const douyin = { ...data, platform: 'douyin', video_id: '7685972770793999667', source: 'asr', provider: 'mlx-whisper',
+    local_viewer_url: 'http://127.0.0.1:8000/api/douyin/jobs/abc/viewer', manual_verification_confirmed: true,
+    transcript_lines: lines.map((line) => ({ ...line, quality_flags: ['contains_low_probability_words'] })) };
+  const item = buildCodexHandoff(douyin);
+  const blocks = readFences(item.content);
+  const metadata = JSON.parse(blocks[0].text);
+  assert.equal(metadata.format, 'video-transcript/v1');
+  assert.equal(metadata.platform, 'douyin');
+  assert.equal(metadata.timestamps, 'estimated_word_alignment');
+  assert.equal(metadata.url, 'https://www.douyin.com/video/7685972770793999667');
+  assert.equal(metadata.quality_flagged_segments, 2);
+  assert.deepEqual(blocks.slice(1).map((block) => block.text), lines.map((line) => line.text));
+  assert.match(item.content, /Wording and start\/end times .* are estimates/);
+  assert.match(item.content, /On-screen text and translations are not recovered/);
+  assert.equal(timestampLink(douyin, 3601.125), douyin.local_viewer_url + '#t=3601.125');
+  assert.equal(timestampLink({ ...douyin, local_viewer_url: undefined }, 1), null);
+  assert.equal(timestampLink({ ...douyin, local_viewer_url: 'https://evil.test/' }, 1), null);
+  assert.equal(timestampLink(data, 3601.125), 'https://www.youtube.com/watch?v=Hrbq66XqtCo&t=3601s');
+});
+
+test('Douyin original captions retain platform timing and require the right identity', () => {
+  const douyin = { ...data, platform: 'douyin', video_id: '7685972770793999667', source: 'platform' };
+  const metadata = JSON.parse(readFences(buildTranscriptExport(douyin).content)[0].text);
+  assert.equal(metadata.timestamps, 'platform_caption_timing');
+  assert.equal(metadata.caption_source, 'platform');
+  assert.throws(() => buildTranscriptExport({ ...douyin, video_id: 'Hrbq66XqtCo' }), /video ID/);
 });

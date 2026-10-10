@@ -15,6 +15,6 @@ with socket.socket() as sock:
     except OSError:
         raise SystemExit('Port 8000 is already in use. Close the other server, then launch again.')
 PY
-echo "YouTube Transcript: http://127.0.0.1:8000"
+echo "Transcript: http://127.0.0.1:8000"
 echo "Keep this window open. Press Control-C to stop."
 exec backend/.venv/bin/python -m uvicorn main:app --app-dir "$APP_ROOT/backend" --host 127.0.0.1 --port 8000

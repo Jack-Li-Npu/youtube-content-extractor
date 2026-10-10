@@ -7,14 +7,19 @@ React interface
   ├─ /api/video-info → yt-dlp metadata and caption choices
   ├─ /api/extract → youtube-transcript-api
   │                  └─ selected-track yt-dlp caption fallback
+  ├─ /api/douyin/jobs → dedicated browser + manual verification when needed
+  │                     ├─ exposed caption track
+  │                     └─ temporary media → optional offline MLX Whisper worker
   └─ complete timestamped Markdown / clipboard
                        ↓ user-controlled handoff
                   external AI assistant + video-brief
                        ↓
-                  brief with YouTube timestamp links
+                  brief with YouTube links or current-job local Douyin links
 ```
 
-`backend/app/transcript_service.py` handles YouTube URL parsing, metadata, caption selection, retrieval, normalization, and error classification. `backend/main.py` exposes the two API routes and serves the built React app. The frontend keeps results in memory and generates the handoff document in `frontend/src/lib/transcript.js`.
+`backend/app/transcript_service.py` handles YouTube URL parsing, metadata, caption selection, retrieval, normalization, and error classification. `backend/main.py` serves those two API routes, the Douyin job routes and the built React app. The frontend keeps results in memory and generates the handoff document in `frontend/src/lib/transcript.js`.
+
+`backend/app/douyin_service.py` manages one background job, a dedicated headed Playwright profile, manual browser confirmation, matching playback metadata and allowlisted media downloads. Existing caption tracks are preferred; optional speech runs in a separate Python 3.12 worker (`backend/workers/local_subtitles.py`) with locked MLX dependencies in `stt/`. The API process does not import MLX. Current-job media is served locally with range support and fractional hash seeking. Speech orchestration and safe worker diagnostics live in `backend/app/speech_service.py`. The primary button handles manual confirmation or speech retry; other stages continue automatically. Current-job status restores progress/results on browser reload. A failed job with validated audio retains media for direct speech retry; cancellation or replacement/shutdown clears it. Completed media lasts until replacement or normal shutdown. See [DOUYIN.md](DOUYIN.md) for acquisition validation and data handling.
 
 `skills/video-brief/SKILL.md` contains analysis instructions; it is not executed by the web server. It asks the assistant to read all segments, cite source intervals, and flag caption uncertainty. There is no model-service integration in the current app.
 
@@ -22,7 +27,7 @@ React interface
 
 Move platform-specific behavior behind a provider selected from a validated URL. A provider should support metadata inspection, track listing, selected-track retrieval, and timestamp-link generation. Share the normalized segment representation (`start`, `duration`, `text`) and common errors, but retain source-specific identifiers such as a Bilibili part.
 
-A future document version should explicitly carry `platform`, canonical source URL, platform video/part identity, caption provenance, and segment IDs. The current document is deliberately named `youtube-transcript/v1`; do not relabel non-YouTube sources as YouTube or change its meaning silently. Keep compatibility when introducing a new format and update the analysis skill to produce platform-appropriate links.
+YouTube documents retain `youtube-transcript/v1`. Douyin uses `video-transcript/v1` with explicit platform, canonical identity/source URL, caption provenance, estimated/platform timing, review-flag counts and an optional local player URL. Numbered headings remain segment IDs. The analysis skill uses platform-appropriate links; a public Douyin seek parameter is not assumed. Future adapters should preserve this distinction and add video-part identity when required.
 
 ## Proposed player boundary (not yet implemented)
 
@@ -34,8 +39,9 @@ If the extension uses the local FastAPI service, design a narrow, explicit conne
 
 ## Stable behavior to preserve
 
-- Existing captions only, with no hidden audio/model download or translation.
-- Uploaded versus automatic source selection and original wording.
+- YouTube uses existing captions only, with no media/model download or translation.
+- Douyin prefers exposed captions; local speech requires explicit enablement and separate setup.
+- Keep original caption wording separate from estimated speech text and its review flags.
 - Fractional start times and actual durations, including overlap and long videos.
 - Explicit extraction errors separate from metadata success.
 - Search affects the view; full-document handoff includes every retrieved segment.

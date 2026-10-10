@@ -2,7 +2,7 @@
 
 The goal is to move from **a video link → complete source captions → a useful brief → the exact moment worth watching**, while keeping source collection and AI analysis separately usable.
 
-This document describes intended work, not shipped functionality or delivery promises. Today, only the local YouTube caption extractor and the separate video-brief skill are implemented.
+This document describes intended work, not delivery promises. The local YouTube caption extractor and video-brief skill work today. A separate Douyin browser/manual-verification flow with optional local speech recognition has passed a live single-video acquisition/transcription test; broader platform coverage is still being validated. See [docs/DOUYIN.md](docs/DOUYIN.md) for tested boundaries.
 
 ## 1. Common caption interface
 
@@ -24,7 +24,7 @@ Keep this interface separate from the web UI and the analysis skill. Do not crea
 | TikTok | Accessible caption tracks and timing, canonical video identity, player behavior | Captions can be retrieved through supported access and timestamp clicks reliably seek the active video |
 | Douyin | Caption availability, distinct URL/player behavior, and access requirements | A separately tested adapter handles supported public videos and reports unsupported or inaccessible sources clearly |
 
-TikTok and Douyin should not be assumed to share the same adapter merely because their products are similar. A platform may expose no usable captions for a given video. In that case, report the limitation; audio transcription would be a separate future feature requiring an explicit design decision.
+TikTok and Douyin should not be assumed to share the same adapter merely because their products are similar. A platform may expose no usable captions for a given video. Douyin now has an optional, separately installed local speech worker; the YouTube path remains caption-only. Broader schemas, portable speech backends and universal platform access remain future work.
 
 For every platform, document supported URL types, language/source selection, restrictions, and known timing limitations. Use synthetic or redistributable test fixtures. Do not bundle login cookies, private media, or access-control bypasses.
 

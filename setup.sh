@@ -11,5 +11,8 @@ done
 cd "$APP_ROOT"
 if [ ! -f .env ]; then cp .env.example .env; fi
 uv sync --project backend --frozen
+if [ ! -d /Applications/Google\ Chrome.app ]; then
+  backend/.venv/bin/python -m playwright install chromium
+fi
 (cd frontend && npm ci --no-audit --no-fund && npm run build)
 echo "Ready. Double-click start.command or run ./start.command."
