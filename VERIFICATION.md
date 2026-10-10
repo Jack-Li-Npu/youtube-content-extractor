@@ -22,7 +22,7 @@ Release preparation uses the documented `setup.sh` from an independent checkout,
 Copy and download now contain the same setup-aware prompt and complete transcript. The prompt requests installation only when `video-brief` is missing, then asks for illustrated takeaways and verified visual timestamps. The full prompt can be expanded on the page.
 
 - **7 frontend tests**, frontend lint, production build, and skill manifest validation passed.
-- A clean installation from `Jack-Li-Npu/youtube-content-extractor` into an isolated test directory matched the bundled skill and its UI metadata byte-for-byte.
+- A clean installation from `Jack-Li-Npu/youtube-content-extractor` (the repository name at that time, now `Jack-Li-Npu/video-content-extractor`) into an isolated test directory matched the bundled skill and its UI metadata byte-for-byte.
 - Browser verification with synthetic API responses preserved all **1,104 segments** while search displayed one match; clipboard and downloaded Markdown matched byte-for-byte, including caption timings beyond one hour and instruction-like text inside source fences.
 - The download comparison utility confirmed the prompt and complete source content matched the extraction fixture.
 - Keyboard expansion of the prompt, the mobile layout at 390 pixels, and the download fallback after denied clipboard access passed; no browser JavaScript errors occurred.

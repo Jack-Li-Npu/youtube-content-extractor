@@ -1,4 +1,4 @@
-# Efficient Content Extractor
+# Video Content Extractor
 
 **Find the moments worth watching.**
 
@@ -75,8 +75,8 @@ See the [Roadmap](ROADMAP.md) for scope, proposed interfaces, and contribution p
 The launcher is designed for macOS. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and Node.js 22.12+ with npm, then run:
 
 ```bash
-git clone https://github.com/Jack-Li-Npu/youtube-content-extractor.git
-cd youtube-content-extractor
+git clone https://github.com/Jack-Li-Npu/video-content-extractor.git
+cd video-content-extractor
 ./setup.sh
 ./start.command
 ```
@@ -111,6 +111,12 @@ Stop the server, then run the following from your clone. Preserve any local sour
 git pull --ff-only
 ./setup.sh
 ./start.command
+```
+
+The repository was renamed from `youtube-content-extractor` to `video-content-extractor`. Existing clones can keep their local folder name. GitHub redirects the former URL; to use the current address directly, run:
+
+```bash
+git remote set-url origin https://github.com/Jack-Li-Npu/video-content-extractor.git
 ```
 
 If you enable or update the optional speech runtime, run `./setup-douyin.sh` before launching. Matching model files are verified and reused instead of downloaded again. Setup preserves your existing `.env`; compare `.env.example` for new optional settings.
