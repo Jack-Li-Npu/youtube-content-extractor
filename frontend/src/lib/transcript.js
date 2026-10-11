@@ -86,7 +86,21 @@ export function buildCodexHandoff(data) {
 
 export function safeFilename(data) {
   const clean = (value) => Array.from(String(value)).filter((char) => char.charCodeAt(0) >= 32).join('').replace(/[<>:"/\\|?*]/g, '_').replace(/[. ]+$/, '');
-  return `${clean(data.title || 'transcript').slice(0, 100)}-${clean(data.video_id)}-${clean(data.language)}`;
+  const shorten = (value, budget) => {
+    const encoder = new TextEncoder();
+    let text = '';
+    let bytes = 0;
+    for (const char of clean(value)) {
+      const size = encoder.encode(char).length;
+      if (bytes + size > budget) break;
+      text += char;
+      bytes += size;
+    }
+    return text.replace(/[. ]+$/, '');
+  };
+  // Leave room for the video ID, language, and extension within common
+  // 255-byte filename limits. Character counts can overflow with CJK/emoji.
+  return `${shorten(data.title || 'transcript', 160)}-${shorten(data.video_id, 24)}-${shorten(data.language, 32)}`;
 }
 
 export function downloadExport(item, filename) {

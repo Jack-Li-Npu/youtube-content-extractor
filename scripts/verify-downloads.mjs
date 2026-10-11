@@ -5,7 +5,8 @@ import { buildCodexHandoff } from '../frontend/src/lib/transcript.js';
 
 const [source, filename] = process.argv.slice(2);
 if (!source || !filename) throw new Error('Pass the saved extraction response JSON and the downloaded .transcript.md file.');
-const data = JSON.parse(fs.readFileSync(source, 'utf8'));
+const response = JSON.parse(fs.readFileSync(source, 'utf8'));
+const data = response.result ?? response.job?.result ?? response;
 const downloaded = fs.readFileSync(filename, 'utf8');
 // Metadata from /api/video-info is added by the UI; compare it when present in the supplied response.
 const metadata = JSON.parse(downloaded.match(/^(`{3,})json\n([\s\S]*?)\n\1$/m)?.[2] || 'null');

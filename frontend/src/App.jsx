@@ -55,9 +55,9 @@ function CodexHandoff({ data, onError }) {
       await navigator.clipboard.writeText(item.content);
       setCopied(true);
       onError('');
-    } catch (failure) {
+    } catch {
       setCopied(false);
-      onError(failure.name === 'NotAllowedError' ? 'Clipboard access failed. Download the transcript and attach it in Codex.' : failure.message);
+      onError('Could not copy the transcript. Download it and attach the file in Codex.');
     }
   }
   function download() {
@@ -107,7 +107,6 @@ export default function App() {
     const query = search.trim().toLocaleLowerCase();
     return query ? lines.filter((line) => line.text.toLocaleLowerCase().includes(query)) : lines;
   }, [result, search]);
-  const wordCount = useMemo(() => result?.plain_text.trim().split(/\s+/u).length || 0, [result]);
   let douyin = false;
   try { douyin = ['douyin.com', 'www.douyin.com', 'v.douyin.com'].includes(new URL(url.trim()).hostname); } catch { /* URL validation happens on submission. */ }
   const jobId = job?.id;
@@ -298,7 +297,7 @@ export default function App() {
               <>
                 <div className="transcript-summary">
                   <div><p className="eyebrow">Full transcript</p><h3>{result.title}</h3>
-                    <p className="transcript-meta"><span>{wordCount.toLocaleString()} words</span><span>{result.transcript_lines.length.toLocaleString()} segments</span><span className="language-label">{result.language}</span></p>
+                    <p className="transcript-meta"><span>{result.transcript_lines.length.toLocaleString()} segments</span><span className="language-label">{result.language}</span></p>
                   </div>
                   {result.source === 'asr' && <p className="speech-notice">Locally generated speech captions. Wording and timing are estimates; verify names and flagged passages against playback. On-screen text is not included.</p>}
                   {result.local_viewer_url && <p className="field-hint">Click any timestamp to watch the local video. Keep this extractor running while Codex reviews it.</p>}

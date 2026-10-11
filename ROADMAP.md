@@ -2,7 +2,7 @@
 
 The goal is to move from **a video link → complete source captions → a useful brief → the exact moment worth watching**, while keeping source collection and AI analysis separately usable.
 
-This document describes intended work, not delivery promises. The local YouTube caption extractor and video-brief skill work today. A separate Douyin browser/manual-verification flow with optional local speech recognition has passed a live single-video acquisition/transcription test; broader platform coverage is still being validated. See [docs/DOUYIN.md](docs/DOUYIN.md) for tested boundaries.
+This document describes intended work, not delivery promises. YouTube caption extraction, the video-brief skill, and a separate Douyin browser workflow with optional local speech recognition are implemented. Douyin speech extraction has been verified on four public videos; broader platform coverage is still being validated. Live platform access can fail independently of the app. See [VERIFICATION.md](VERIFICATION.md) for the current results and [docs/DOUYIN.md](docs/DOUYIN.md) for tested boundaries.
 
 ## 1. Common caption interface
 

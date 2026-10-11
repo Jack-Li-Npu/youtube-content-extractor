@@ -2,7 +2,7 @@
 
 **Find the moments worth watching.**
 
-Extract YouTube captions or try the local Douyin workflow, bring a timestamped transcript to Codex, and find the moments worth watching. The Douyin flow has passed a live single-video test; platform verification can still block other videos.
+Extract YouTube captions or use the local Douyin workflow, bring a timestamped transcript to Codex, and find the moments worth watching. Douyin speech extraction has been verified on four public videos; platform verification can still block other videos.
 
 [Quick start](#quick-start) &nbsp; / &nbsp; [Douyin guide](docs/DOUYIN.md) &nbsp; / &nbsp; [See the demo](#demo-from-captions-to-a-timestamped-brief) &nbsp; / &nbsp; [Roadmap](ROADMAP.md) &nbsp; / &nbsp; [Attribution](#attribution)
 
@@ -59,11 +59,13 @@ Copy and download always include the entire retrieved transcript, even when sear
 
 ### Where this is going
 
-**YouTube caption extraction works today.** A Douyin browser flow with manual verification and optional local speech recognition has passed an end-to-end single-video test. After a requested manual check, one primary-button click runs acquisition through Codex handoff. See [Douyin setup and verification](docs/DOUYIN.md) for its current validation status and restrictions.
+YouTube retrieves existing caption tracks when platform access permits. Douyin uses normal browser access and optional local speech recognition; after a requested manual check, one primary-button click runs acquisition through Codex handoff. See [Douyin setup and verification](docs/DOUYIN.md) for its tested boundaries.
+
+The [2026-10-11 system check](VERIFICATION.md#system-check--2026-10-11) added two successful Douyin videos with matching copy/download exports and verified local seeks. All four YouTube test links received a bot-check response through the tested proxy; those runs did not retrieve captions. Offline tests and historical successes do not guarantee current live access.
 
 | Direction | Status |
 | --- | --- |
-| Douyin browser acquisition + optional local speech | Verified on one public video; broader coverage unverified |
+| Douyin browser acquisition + optional local speech | Verified on four public videos; other videos and real verification challenges can still fail |
 | TikTok and Bilibili caption adapters | Planned |
 | Browser extension beside the video player | Planned |
 | Click a key point to seek the active player | Planned |

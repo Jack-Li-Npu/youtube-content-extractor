@@ -1,6 +1,6 @@
 # Douyin: manual browser verification and local speech
 
-**Verified end to end on 2026-10-08** for video `7685972770793999667`: normal browser playback → fresh media acquisition → local speech recognition → 466 timestamped segments → matching copy/download handoff and local timestamp seeking. A working saved session was reused for this test. Other videos can still require manual verification or refuse access; this is not a universal downloader.
+**Verified on four public videos across 2026-10-08–11.** The latest two tests freshly acquired videos, generated 65 and 237 Chinese speech-caption segments, matched full copy/download handoffs, and displayed local frames at requested timestamps. Working saved sessions were reused. Other videos can still require manual verification or refuse access; this is not a universal downloader. See the [current system check](../VERIFICATION.md#system-check--2026-10-11).
 
 ## Use it
 
@@ -20,6 +20,16 @@ The local player supports fractional `#t=SECONDS` jumps and HTTP range playback.
 
 This real 2026-10-08 result contains **466 segments** from a 31-minute public video. The approximately **19,301-token** estimate covers the full exported text and prompt; subsequent Codex reasoning, tool calls, screenshots, and replies add usage. Copy and download include every segment even when search shows only a few. The screenshot demonstrates the extractor's output, not the correctness of every recognized word. Video and caption excerpts belong to their respective owners. The media, complete transcript, login profile, and worker logs are excluded from the repository.
 
+### Additional video checks — 2026-10-11
+
+![237-segment Chinese speech result; searching for one phrase keeps the complete Codex handoff](screenshots/douyin-additional-video.jpg)
+
+This [7-minute source video](https://www.douyin.com/video/7631965839184432424) produced **237 segments** and an approximately **9,616-token** handoff. Search shows one matching cue, while copy/download retain all 237. Its long Chinese title exposed a filename-length bug; the corrected download was compared byte-for-byte with the full copied transcript. No complete transcript is distributed here.
+
+![The locally acquired video displaying a decoded frame at 300.500 seconds](screenshots/douyin-local-seek.jpg)
+
+The local player was inspected at **152.300 and 300.500 seconds**. A second [3-minute physics video](https://www.douyin.com/video/7687991485467966031) produced **65 segments**, with complete copy/download comparison and inspected frames at **36.280 and 95.800 seconds**. These checks establish local seeking and handoff completeness, not exact ASR accuracy or the first appearance of a visual. Source imagery and captions belong to their creators. The screenshot's local link is not a live video hosted by this repository.
+
 ## Troubleshooting
 
 | What you see | What to do |
@@ -33,7 +43,7 @@ This real 2026-10-08 result contains **466 segments** from a 31-minute public vi
 | Progress disappears after reloading | Reload restores only the current job in the same running server. A restart clears jobs. Starting another extraction replaces the previous one. |
 | A local timestamp link is missing or expired | Local playback exists only when this job acquired media. Keep that server/job running on the same computer. A caption-only Douyin result retains its public source URL but has no local video to seek. |
 | Codex cannot open the player or capture screenshots | Check that Codex has browser/screenshot tools and can access localhost on this computer. The skill cannot grant those capabilities. Ask for a caption-only brief and identify the unverified visuals; do not treat caption positions as verified visual timestamps. |
-| Downloads do not complete in an embedded browser | Use **Copy for Codex**, or open the extractor in a regular browser for the file download. Both handoffs contain the same full text. |
+| Downloads do not complete | Update the app if a long Chinese/emoji title caused the failure; filenames now respect common byte limits. If your embedded browser still prevents downloads, use **Copy for Codex** or open the extractor in a regular browser. Both handoffs contain the same full text. |
 
 Selecting **New transcript** starts a new form; the previous Douyin media is removed when a new Douyin job actually starts, or when the server stops. Save any transcript you want to keep before replacing the result.
 
@@ -61,11 +71,12 @@ States: `opening_browser → reading_video → waiting_verification (only when n
 
 ## Validation record
 
+- System check on 2026-10-11: **88 backend tests, five multilingual subcases and 16 frontend tests** passed, plus lint/build, shell syntax and locked-dependency checks. Two additional videos freshly completed ASR and browser copy/download comparison; source frames and fractional local seek positions were inspected. The 21-minute Chinese failure was also corrected and retried successfully with **605 segments** on 2026-10-10. See [VERIFICATION.md](../VERIFICATION.md) for the complete matrix, YouTube blocked-request results, and limits.
 - Release checks on 2026-10-10: **86 backend tests and 15 frontend tests** passed; Ruff, ESLint, the frontend production build and shell syntax checks passed. Regressions include normal saved-session playback, one manual confirmation through caption completion, automatic fallback to a media variant with audio, safe worker diagnostics, speech retry without reopening the browser, reload status, origin checks, range playback, accurate exports, and existing YouTube extraction behavior. These offline checks do not perform real identity verification or download media/model weights.
 - Live test: video `7685972770793999667` was freshly acquired through this adapter as a 1280×720 video with audio (90,670,052 bytes; duration 1,891.861 seconds). No old Douzy copy was used. Offline MLX Whisper large-v3-turbo produced 466 cues in 88.3 seconds, including audio extraction but excluding download time, with about 3.14 GiB peak MLX allocation. This is a sample, not an accuracy or speed guarantee.
 - First cue: `00:00:00.000–00:00:04.440`; last cue: `00:31:24.240–00:31:25.260`. The final seconds contain no additional recognized cue. The transcript is recognized speech, not verified original subtitles; 138 cues were flagged for review. Names, foreign phrases, music and silence still need checking.
 - Browser verification: the running job survived a page reload; the result displayed 466 segments; Copy for Codex and both browser-downloaded Markdown files matched the full export exactly. A clicked `06:42` link opened the local player at `402.480` seconds, with the expected source frame and playable video. The handoff estimate displayed approximately 19,301 input tokens, excluding later AI/tool/image usage.
 - The live test exposed an interpreter configuration failure (`mlx` absent from base Python). The runtime path was corrected to the isolated virtual environment, and a preflight check now detects missing MLX before download. Synthetic tests verify that failures after acquisition retain the video for direct speech retry.
-- Live verification did not trigger a new identity challenge because the existing session worked. The manual pause/confirm path is covered by offline regression tests; users must still perform real site challenges themselves. Broader Douyin URL/video coverage remains unverified.
+- Live verification did not trigger a new identity challenge because the existing session worked. The manual pause/confirm path is covered by offline regression tests; users must still perform real site challenges themselves. The later two-video check above adds sample coverage, not universal access or live confirmation of every caption schema and URL type.
 
 Future work includes broader caption schemas, music/silence handling, portable speech backends, importing a user-selected local file, and an extension that seeks the original active player. These are not shipped features.

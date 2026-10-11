@@ -87,6 +87,17 @@ test('filenames cannot introduce paths or control characters', () => {
   assert.ok(!filename.includes('\u0000'));
 });
 
+test('long Unicode titles download within filesystem filename limits', () => {
+  const video_id = '7631965839184432424';
+  for (const title of ['一口气看懂毛球定理'.repeat(30), '🧪🔬🌍'.repeat(80), 'A long title '.repeat(50)]) {
+    const basename = safeFilename({ ...data, title, video_id, language: 'zh-Hans' });
+    assert.ok(Buffer.byteLength(`${basename}.transcript.md`, 'utf8') < 255);
+    assert.ok(basename.endsWith(`-${video_id}-zh-Hans`));
+    assert.ok(title.startsWith(basename.slice(0, -`-${video_id}-zh-Hans`.length)));
+    assert.equal(basename.isWellFormed(), true, 'truncation must not split a Unicode surrogate pair');
+  }
+});
+
 test('Douyin speech export preserves the complete source and labels estimated timing', () => {
   const douyin = { ...data, platform: 'douyin', video_id: '7685972770793999667', source: 'asr', provider: 'mlx-whisper',
     local_viewer_url: 'http://127.0.0.1:8000/api/douyin/jobs/abc/viewer', manual_verification_confirmed: true,

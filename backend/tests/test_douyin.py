@@ -254,11 +254,12 @@ def test_normal_playback_one_confirmation_runs_through_caption_export(tmp_path, 
     context.close.assert_called()
 
 
-def test_speech_flow_retries_audio_variant_without_another_user_step(tmp_path, monkeypatch):
+@pytest.mark.parametrize("allow_asr", [True, False])
+def test_speech_flow_respects_opt_out_and_retries_audio_variant(tmp_path, monkeypatch, allow_asr):
     import playwright.sync_api
 
     manager = DouyinManager()
-    job = Job("id", URL, VIDEO, True, tmp_path)
+    job = Job("id", URL, VIDEO, allow_asr, tmp_path)
     manager.job = job
     data = fixture_video()
     data["video"]["subtitleInfos"] = []
@@ -272,7 +273,8 @@ def test_speech_flow_retries_audio_variant_without_another_user_step(tmp_path, m
     browser.__enter__.return_value.chromium.launch_persistent_context.return_value = context
     monkeypatch.setattr(playwright.sync_api, "sync_playwright", lambda: browser)
     monkeypatch.setenv("DOUYIN_BROWSER_PROFILE", str(tmp_path / "profile"))
-    monkeypatch.setattr("app.douyin_service.check_setup", lambda: None)
+    setup = MagicMock()
+    monkeypatch.setattr("app.douyin_service.check_setup", setup)
     probe = MagicMock(side_effect=[ExtractionError("no_audio", "no audio", 422), 10.125])
     monkeypatch.setattr("app.douyin_service.probe_video", probe)
     downloads = []
@@ -295,6 +297,12 @@ def test_speech_flow_retries_audio_variant_without_another_user_step(tmp_path, m
         ),
     )
     manager._run(job)
+    if not allow_asr:
+        assert job.state == "failed" and job.code == "captions_not_found"
+        assert job.result is None and job.media is None and downloads == []
+        setup.assert_not_called()
+        probe.assert_not_called()
+        return
     assert job.state == "completed" and job.result["source"] == "asr"
     assert downloads == ["https://v.douyinvod.com/720", "https://v.douyinvod.com/4k"]
     assert job.result["duration"] == 10.125

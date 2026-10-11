@@ -1,5 +1,31 @@
 # Verification
 
+## System check — 2026-10-11
+
+The Chinese text-preservation correction below was rechecked, followed by fresh acquisitions of two additional public Douyin videos and live requests for four YouTube videos. The local YouTube proxy setting was empty at first, producing `connection_failed`. Restoring the existing `http://127.0.0.1:7890` proxy established connectivity, but YouTube then returned bot checks. No authentication bypass or cookie import was attempted.
+
+| Source and input format | Live result | Caption range / checks |
+| --- | --- | --- |
+| [Douyin electric phenomena](https://www.douyin.com/video/7687991485467966031), `/video/…` | Fresh acquisition; 65 Chinese ASR segments from a 178.833-second video | `00:00:00.000–00:02:57.960`; local inference including audio decoding took 11.823 seconds |
+| [Douyin hairy-ball theorem](https://www.douyin.com/video/7631965839184432424), `jingxuan?modal_id=…` | Fresh acquisition; 237 Chinese ASR segments from a 445.405-second video | `00:00:00.000–00:07:24.120`; local inference including audio decoding took 24.868 seconds |
+| [YouTube Hrbq66XqtCo](https://www.youtube.com/watch?v=Hrbq66XqtCo), watch URL | `502 request_blocked` during metadata inspection | No new captions retrieved |
+| [YouTube aircAruvnKk](https://www.youtube.com/watch?v=aircAruvnKk), `youtu.be` URL | `502 request_blocked` during metadata inspection | No new captions retrieved |
+| [YouTube iG9CE55wbtY](https://www.youtube.com/watch?v=iG9CE55wbtY), embed URL | `502 request_blocked` during metadata inspection | No new captions retrieved |
+| [YouTube 5DMutq7W__w](https://www.youtube.com/watch?v=5DMutq7W__w), watch URL | `502 request_blocked` during metadata inspection | No new captions retrieved |
+
+For both new Douyin results, the live API matched every normalized cue's text, timing and review flags. All non-whitespace recognized characters were preserved from the native ASR output. The complete browser clipboard and downloaded Markdown matched the generated handoff byte-for-byte. Filtering the 237-segment result to one match did not truncate its handoff. These are completeness checks, not speech-recognition accuracy measurements; the recognized text contains errors and important words still need playback review.
+
+Local playback decoded visible frames at **36.280 and 95.800 seconds** in the first video and **152.300 and 300.500 seconds** in the second (`readyState=4`, no media error). Actual playback advanced in the first sample. HTTP range retrieval returned `206` with the requested bytes. The result survived a page reload. A malformed Douyin hostname returned `400 invalid_url` without replacing the completed job; a foreign POST origin returned `403`. The YouTube browser flow showed the blocked-request error and no false transcript success. Neither new Douyin test requested manual verification; a working saved session was reused, so real identity/CAPTCHA handling remains unverified.
+
+The check found and corrected an additional download bug: the long Chinese title generated a **315-byte filename** and did not save. Filename shortening now budgets UTF-8 bytes without splitting Unicode characters; the same browser download saved successfully with a **197-byte filename**, preserving the video ID and complete transcript. A regression covers long Chinese, emoji and ASCII titles. The misleading whitespace-based word count was removed, and clipboard failures now give a clear download fallback.
+
+- **88 backend tests, five multilingual subcases, and 16 frontend tests passed.** Coverage includes selected uploaded/automatic tracks, caption-only fallback, empty/failed results, millisecond exports beyond one hour, source fencing, manual-confirmation/retry states, and speech opt-out preventing media downloads and model setup.
+- Backend Ruff, frontend ESLint, the production build, Bash syntax checks, and both offline uv lockfile checks passed. No dependencies changed.
+- YouTube remains caption-only, with media downloads disabled. Speech inference uses the already installed local model in offline mode; this check downloaded no model weights and made no cloud AI requests. Browser acquisition/media requests are necessary for the two Douyin ASR tests.
+- Selected UI/player screenshots are published in [the Douyin guide](docs/DOUYIN.md#additional-video-checks--2026-10-11). Full transcripts, media, worker logs, local proxy settings and browser profiles remain outside Git.
+
+Current limits: successful new YouTube extraction could not be established under the tested network conditions; new live Douyin tests exercised ASR, not an exposed platform-caption track. Those track-selection and fallback paths have offline coverage. This sample does not establish universal platform access, caption accuracy, or successful illustrated analysis by Codex.
+
 ## Chinese speech-caption correction — 2026-10-10
 
 The text-preservation check incorrectly inserted spaces between split caption chunks. This falsely rejected recognized text in languages such as Chinese that do not require spaces between words. The formatter now reconstructs the model's original boundary whitespace for validation, then trims individual displayed cues. It retains the text-preservation check and the original estimated timings.
@@ -60,7 +86,7 @@ These are historical checks of specific videos and network conditions, not a pro
 
 ## Repeat the export comparison
 
-Save the selected `/api/extract` response as JSON and download its Markdown document:
+Save the selected `/api/extract` response as JSON and download its Markdown document. For Douyin, save the completed `/api/douyin/jobs/{id}` response or `/api/douyin/current-job`; the utility reads its nested result:
 
 ```bash
 node scripts/verify-downloads.mjs '/path/to/extract-response.json' '/path/to/download.transcript.md'
