@@ -1,17 +1,18 @@
-import { ArrowUpRight, AlignLeft, Quote } from 'lucide-react';
+import { ArrowUpRight, Captions, Clock3, FileText, Monitor } from 'lucide-react';
 
-export default function EmptyState({ hasVideo, onExample }) {
+export default function EmptyState({ platform, hasVideo, onExample }) {
+  const douyin = platform === 'douyin';
   return (
     <div className="empty-state">
-      <div className="paper-illustration" aria-hidden="true">
-        <div className="paper-shadow" />
-        <div className="paper-sheet"><div className="paper-top"><AlignLeft size={18} /><span>TRANSCRIPT</span></div><Quote size={28} className="paper-quote" /><div className="paper-lines"><i /><i /><i /><i /><i /></div><div className="paper-bottom"><span>01:24</span><span className="paper-highlight" /></div></div>
+      <span className="empty-icon" aria-hidden="true">{douyin ? <Monitor size={27} /> : <Captions size={27} />}</span>
+      <h3>{hasVideo ? 'Choose a caption track.' : douyin ? 'Your Douyin transcript starts here.' : 'Start with the captions.'}</h3>
+      <p className="empty-description">{hasVideo ? 'Select a language in the source panel, then click Get transcript.' : douyin ? 'Open a public video in your local browser. If a check appears, complete it there and return here.' : 'Paste a YouTube link to read its available captions, then copy the full transcript into Codex.'}</p>
+      {!douyin && !hasVideo && <button className="text-button" onClick={onExample}>Try an example<ArrowUpRight size={16} /></button>}
+      <div className="empty-features">
+        <span>{douyin ? <Monitor size={16} /> : <Captions size={16} />}{douyin ? 'Official browser access' : 'Original caption text'}</span>
+        <span><Clock3 size={16} />Clickable timestamps</span>
+        <span><FileText size={16} />One file for Codex</span>
       </div>
-      <p className="eyebrow">From watching to understanding</p>
-      <h3>The whole conversation.<br />Ready for your next step.</h3>
-      <p className="empty-description">{hasVideo ? 'Choose the captions you want, then click Get transcript. Every available segment will appear here.' : 'Add a YouTube or Douyin link. Take its timestamped transcript to Codex for a summary and the moments worth watching.'}</p>
-      {!hasVideo && <button className="text-button" onClick={onExample}>Try the example video<ArrowUpRight size={16} /></button>}
-      <div className="format-signature"><span>ONE MARKDOWN FILE</span><span>FULL TEXT + TIMESTAMPS</span></div>
     </div>
   );
 }

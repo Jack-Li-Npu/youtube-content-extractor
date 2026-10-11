@@ -5,7 +5,7 @@ export function isRunning(job) {
 }
 
 export function primaryAction(job) {
-  if (job?.state === 'waiting_verification') return { action: 'confirm', label: 'Verified — extract transcript', enabled: true };
+  if (job?.state === 'waiting_verification') return { action: 'confirm', label: 'I’ve verified, continue', enabled: true };
   if (job?.state === 'failed') return job.can_retry_speech
     ? { action: 'retry-speech', label: 'Retry speech recognition', enabled: true }
     : { action: 'start', label: 'Retry extraction', enabled: true };

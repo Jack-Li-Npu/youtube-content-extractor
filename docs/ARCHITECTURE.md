@@ -46,3 +46,9 @@ If the extension uses the local FastAPI service, design a narrow, explicit conne
 - Explicit extraction errors separate from metadata success.
 - Search affects the view; full-document handoff includes every retrieved segment.
 - Analysis happens only after the user chooses to send source text to an assistant.
+
+## Independent frontend channels
+
+The interface mounts one `TranscriptWorkspace` per platform and hides the inactive tab without unmounting it. Each instance owns its URL, selected track, transcript, search, errors and pending request state. YouTube requests therefore cannot overwrite a Douyin result, and Douyin polling continues when its tab is hidden. Only the Douyin workspace restores `/api/douyin/current-job`; neither switching tabs nor clearing YouTube sends a Douyin job mutation.
+
+`ChannelTabs` provides labelled tab panels and Arrow Left/Right, Home and End keyboard navigation. Channel mismatches are blocked before submission, while backend URL validation remains authoritative. Token counting starts only when the result's channel is visible and caches the completed estimate for that result. Results are not duplicated into local storage. A reload clears YouTube page state; the current Douyin job can be restored from the running server.

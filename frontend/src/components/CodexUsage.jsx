@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export default function CodexUsage({ data }) {
+export default function CodexUsage({ data, enabled = true }) {
   const [estimate, setEstimate] = useState(null);
+  const completed = useRef(null);
   useEffect(() => {
+    // A restored transcript in a hidden channel should not load the tokenizer.
+    if (!enabled || completed.current?.data === data) return;
     let active = true;
     let worker;
     new Promise((resolve, reject) => {
@@ -11,12 +14,12 @@ export default function CodexUsage({ data }) {
       worker.onerror = (event) => { event.preventDefault(); reject(new Error('Estimate failed')); };
       worker.postMessage(data);
     }).then((value) => {
-      if (active) setEstimate({ data, value });
+      if (active) { completed.current = { data, value }; setEstimate(completed.current); }
     }).catch(() => {
-      if (active) setEstimate({ data, value: null });
+      if (active) { completed.current = { data, value: null }; setEstimate(completed.current); }
     }).finally(() => worker?.terminate());
     return () => { active = false; worker?.terminate(); };
-  }, [data]);
+  }, [data, enabled]);
 
   const value = estimate?.data === data ? estimate.value : undefined;
   return (

@@ -6,7 +6,7 @@ Extract YouTube captions or use the local Douyin workflow, bring a timestamped t
 
 [Quick start](#quick-start) &nbsp; / &nbsp; [Douyin guide](docs/DOUYIN.md) &nbsp; / &nbsp; [See the demo](#demo-from-captions-to-a-timestamped-brief) &nbsp; / &nbsp; [Roadmap](ROADMAP.md) &nbsp; / &nbsp; [Attribution](#attribution)
 
-![The local app with a complete YouTube transcript, caption-track selection, search, and copy or download for Codex](docs/screenshots/transcript-extraction.png)
+![The YouTube channel in the local app, with its own caption-only form and a separate Douyin tab](docs/screenshots/youtube-channel.jpg)
 
 Built on [samueladegoke/yt-transcript-web](https://github.com/samueladegoke/yt-transcript-web), with its MIT license preserved. Runs locally on your Mac; analysis happens in your own AI chat.
 
@@ -14,17 +14,34 @@ Built on [samueladegoke/yt-transcript-web](https://github.com/samueladegoke/yt-t
 
 A long interview, lecture, or news program becomes easier to navigate when you can read a brief and open the passages that matter.
 
-1. **Get the source.** Paste a YouTube link for existing captions, or a Douyin link for manual browser verification followed by captions or optional local speech recognition.
+1. **Choose a channel.** Open **YouTube** for existing captions, or **Douyin** for browser access followed by captions or optional local speech recognition. Paste a link from that platform.
 2. **Bring it to Codex.** Copy or download one complete Markdown transcript with every retrieved caption and its timestamps.
 3. **Choose what to watch.** Use the included `video-brief` skill for an overview, key points, and links back to supporting passages.
 
 You choose when and where to submit the transcript. The app makes no AI-service requests or automatic uploads; the Markdown also works with other assistants.
 
+## Two channels, one handoff
+
+| Channel | What happens after you paste a link |
+| --- | --- |
+| **YouTube** | Check existing caption tracks, choose the language when needed, and retrieve the transcript. No separate browser window or speech model is used. |
+| **Douyin** | Open the official video in a dedicated local browser. Complete any requested login or verification there, then click **I’ve verified, continue**. A working saved session proceeds automatically. |
+
+Each channel keeps its own link, transcript, selected language, search, and errors while the page stays open. Switching to YouTube leaves an active Douyin job running. The Douyin tab shows **Needs verification**, **Extracting**, or **Ready**, so you can see when to return. Pasting a link into the wrong channel shows a message before any extraction request is sent.
+
+![The separate Douyin channel with verification guidance, optional local speech, a restored 237-segment result and the complete Codex handoff](docs/screenshots/douyin-channel.jpg)
+
+This is the real result from the [7-minute math video](https://www.douyin.com/video/7631965839184432424) tested on 2026-10-11, restored into the refined interface. Search filters the view; exports still include all **237 segments**. Wording and timing are estimated speech recognition. Source imagery and captions belong to their creators.
+
+The page opens on YouTube. After a reload, open **Douyin** to restore its current job while the server is running. YouTube drafts and results stay in page memory and do not survive a reload. The **+** beside a channel heading starts a new transcript in that channel. Starting another Douyin extraction replaces its previous temporary video; switching channels does not. The interface follows your system's light or dark appearance and respects reduced motion.
+
 ## Demo: from captions to a timestamped brief
 
 ### Read the brief. Open the passage.
 
-The app above extracts **685 caption segments** from a Bloomberg Tech video. Below, a separate Codex chat turns that source into a timestamped brief.
+This earlier YouTube demonstration extracts **685 caption segments** from a Bloomberg Tech video. A separate Codex chat then turns that source into a timestamped brief.
+
+![Historical YouTube extraction with 685 caption segments and the complete Codex handoff](docs/screenshots/transcript-extraction.png)
 
 ![Codex displaying an overview and key points with clickable YouTube timestamps beside the exported source transcript](docs/screenshots/codex-timestamped-brief.png)
 
@@ -39,7 +56,7 @@ Both screenshots show *Anthropic Goes Big on Compute, Microsoft Rethinks AI* by 
 
 ### Douyin: from manual verification to a complete handoff
 
-The latest version also handles individual Douyin links through a dedicated local browser. Complete any login or identity check yourself on the official Douyin page, then click **Verified — extract transcript** in the extractor. That same primary button starts the remaining steps: retrieve an available caption track, or acquire the video for optional local speech recognition, then prepare the Codex file. A working saved session can proceed without another check. **Douzy is not required.**
+The latest version also handles individual Douyin links through a dedicated local browser. Complete any login or identity check yourself on the official Douyin page, then click **I’ve verified, continue** in the extractor. That same primary button starts the remaining steps: retrieve an available caption track, or acquire the video for optional local speech recognition, then prepare the Codex file. A working saved session can proceed without another check. **Douzy is not required.**
 
 ![Successful Douyin extraction showing the complete Codex handoff, local speech warning, timestamp links, and estimated input token count](docs/screenshots/douyin-codex-handoff.png)
 
@@ -98,9 +115,9 @@ The script uses uv to create a separate Python 3.12 environment and downloads ab
 
 To use Douyin:
 
-1. Paste an individual video, `jingxuan?modal_id=…`, or `v.douyin.com` share link. Leave **Use local speech recognition if no caption track is available** checked when needed.
+1. Open the **Douyin** tab. Paste an individual video, `jingxuan?modal_id=…`, or `v.douyin.com` share link. Leave **Use local speech recognition** checked when needed.
 2. Click **Extract transcript**. Keep the dedicated browser open. If asked, complete Douyin's login, CAPTCHA, or identity verification yourself there; the extractor does not collect identity documents or solve challenges.
-3. Return to the extractor and click **Verified — extract transcript** when it asks. The remaining steps run automatically. If a saved session already works, this confirmation is skipped.
+3. Return to the extractor and click **I’ve verified, continue** when it asks. The remaining steps run automatically. If a saved session already works, this confirmation is skipped.
 4. When **Ready for Codex** appears, search the text, click a timestamp to inspect the local video, or copy/download the complete handoff. Check speech-recognition warnings before relying on names or numbers.
 
 Keep the server running while Codex uses local video links. Starting another Douyin extraction or stopping the server removes the previous local video; downloaded transcript files remain on your computer. For retry behavior, configuration paths, and access failures, see the [Douyin guide](docs/DOUYIN.md).

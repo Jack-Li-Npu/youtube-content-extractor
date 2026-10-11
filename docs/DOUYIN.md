@@ -6,13 +6,21 @@
 
 1. Run `./setup.sh` and `./start.command` as usual. Chrome is used when installed; setup installs Playwright Chromium otherwise. Douzy is not required.
 2. For optional speech recognition on an Apple Silicon Mac, install FFmpeg (`brew install ffmpeg`) and run `./setup-douyin.sh` once. It creates a separate Python 3.12 environment, installs locked MLX dependencies, and verifies pinned Whisper large-v3-turbo model files by SHA-256. Model weights use about 1.6 GB; dependencies need additional disk space. Existing caption extraction does not need this model.
-3. Paste an individual HTTPS Douyin video link, a `jingxuan?modal_id=…` link, or a `v.douyin.com` share link. Choose whether to allow local speech recognition when no caption track is found.
-4. Click **Extract transcript**. A dedicated browser opens the official Douyin page and reuses its saved session. If normal playback returns this video's metadata, extraction proceeds automatically. If Douyin requires a login, CAPTCHA or identity check, complete it yourself on its official page. Then click the **same primary button**, now labelled **Verified — extract transcript**, in the extractor. Keep the browser open until acquisition finishes.
+3. Open the **Douyin** tab, then paste an individual HTTPS Douyin video link, a `jingxuan?modal_id=…` link, or a `v.douyin.com` share link. Choose whether to allow local speech recognition when no caption track is found.
+4. Click **Extract transcript**. A dedicated browser opens the official Douyin page and reuses its saved session. If normal playback returns this video's metadata, extraction proceeds automatically. If Douyin requires a login, CAPTCHA or identity check, complete it yourself on its official page. Then click the **same primary button**, now labelled **I’ve verified, continue**, in the extractor. Keep the browser open until acquisition finishes.
 5. That one click runs the remaining pipeline. The first available platform caption track is used when exposed; otherwise, with speech recognition enabled, the app downloads the returned playback media, checks for usable audio, transcribes locally, and prepares the complete Codex handoff. The chosen language/source is recorded in the result. There is no second Continue button, download-tool handoff, or required reply to Codex. Douyin does not currently have a separate language picker; YouTube keeps its selected-track workflow.
-6. The progress panel shows access, acquisition, speech recognition and handoff preparation. Reloading the page restores the current job while the server remains running. If speech processing fails after acquisition, **Retry speech recognition** reuses that video without a new browser session or download. Other failures show **Retry extraction**. **Error details** exposes a safe error code and worker exit number, never a raw traceback or browser secrets.
+6. The progress panel shows access, acquisition, speech recognition and handoff preparation. You can switch to YouTube without stopping the job or losing either transcript. Reloading the page opens YouTube first; select the Douyin tab to restore the current job while the server remains running. If speech processing fails after acquisition, **Retry speech recognition** reuses that video without a new browser session or download. Other failures show **Retry extraction**. **Error details** exposes a safe error code and worker exit number, never a raw traceback or browser secrets.
 7. Search, click a timestamp, or **Copy for Codex** / **Download for Codex**. Speech text and word timing are estimates. Check names, numbers and flagged cues; no on-screen translations or scene text are recovered. The app prepares the handoff; you submit it in your Codex chat.
 
 The local player supports fractional `#t=SECONDS` jumps and HTTP range playback. Keep the extractor running on the same computer while Codex inspects screenshots. The local player expires when another Douyin job starts or the server stops. Local links do not work for someone else on GitHub. Public Douyin links are preserved for attribution; exact seeking on those links is not claimed.
+
+## Separate channel
+
+![The Douyin channel with browser verification guidance, optional speech recognition, token estimate, and a real restored transcript](screenshots/douyin-channel.jpg)
+
+The **YouTube** tab uses existing captions and has no browser-verification or speech controls. The **Douyin** tab keeps its own source and progress, and shows **Needs verification**, **Extracting**, or **Ready** even while YouTube is selected. The **+** beside a channel heading clears that channel's form after extraction; a running Douyin job must finish or be cancelled first. Switching tabs never starts or cancels a job.
+
+This screenshot restores the real 237-segment math result from 2026-10-11. The interface change itself does not establish new platform access or speech accuracy. The older screenshots below show earlier interface versions.
 
 ## Example result
 
@@ -34,7 +42,7 @@ The local player was inspected at **152.300 and 300.500 seconds**. A second [3-m
 
 | What you see | What to do |
 | --- | --- |
-| A Douyin login, CAPTCHA, or identity prompt | Complete it yourself in the dedicated official-page browser. Return and click **Verified — extract transcript**. Use **Show Douyin window** if it is behind another window. Do not paste credentials or ID documents into this app or Codex. |
+| A Douyin login, CAPTCHA, or identity prompt | Complete it yourself in the dedicated official-page browser. Return and click **I’ve verified, continue**. Use **Show Douyin window** if it is behind another window. Do not paste credentials or ID documents into this app or Codex. |
 | `douyin_verification_blocked` after confirming | Check that the exact video plays in the dedicated browser. Retry extraction if appropriate; verification may still not grant access, and this app cannot bypass that restriction. |
 | `speech_setup_required`, `speech_runtime_missing`, or `model_missing` | On Apple Silicon, install FFmpeg and run `./setup-douyin.sh` from the project root. Check any custom `STT_PYTHON` / `STT_MODEL_DIR` paths. Restart after changing `.env`, then use the displayed retry action. |
 | Speech processing fails after the video was acquired | Click **Retry speech recognition**. This reuses validated media; no new browser login or download is needed. The current failed job is retained only until replaced or shutdown. |

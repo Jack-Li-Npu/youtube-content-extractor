@@ -4,7 +4,7 @@ import { isRunning, primaryAction, progressSteps } from '../src/lib/douyin-flow.
 
 test('the same primary action resumes after manual verification, then becomes busy', () => {
   assert.equal(primaryAction(null).action, 'start');
-  assert.deepEqual(primaryAction({ state: 'waiting_verification' }), { action: 'confirm', label: 'Verified — extract transcript', enabled: true });
+  assert.deepEqual(primaryAction({ state: 'waiting_verification' }), { action: 'confirm', label: 'I’ve verified, continue', enabled: true });
   for (const state of ['opening_browser', 'reading_video', 'downloading_captions', 'downloading_media', 'transcribing']) {
     assert.equal(primaryAction({ state }).enabled, false);
     assert.equal(isRunning({ state }), true);

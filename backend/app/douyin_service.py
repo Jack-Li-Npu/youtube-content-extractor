@@ -522,7 +522,7 @@ class DouyinManager:
                                 pass
                     if not captured:
                         job.state = "waiting_verification"
-                        job.message = "Complete Douyin's requested login or verification, then click Verified — extract transcript."
+                        job.message = "Complete Douyin's requested login or verification, then click I’ve verified, continue."
                         page.bring_to_front()
                         self._wait(job, page)
                         job.state, job.message = (
